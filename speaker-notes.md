@@ -21,16 +21,26 @@ out. The loop is: idea, Codex, Python, run, improve, demo."
 
 Point at the loop on the slide. Keep this crisp.
 
-### 1:30-3:00 - Slide 2: Smallest Useful Python Call
+### 1:30-2:30 - Slide 3: Setup
+
+Say:
+
+"Everything here runs from the repo root. If your `OPENAI_API_KEY` is already
+exported, you do not need a `.env` file. Poetry owns the environment."
+
+Use the copy buttons if presenting from the HTML deck.
+
+### 2:30-4:00 - Slide 4: Smallest Useful Python Call
 
 Say:
 
 "The smallest useful OpenAI API app is just a client, a model, an input, and a
 response. Everything else is product design around that loop."
 
-Show the Python snippet. Do not overexplain SDK setup.
+Click `Run snippet` to show the sample result. Make it clear this is a static
+slide simulation; the real API demo is the Poetry command.
 
-### 3:00-4:00 - Slide 3: Codex Is The Builder
+### 4:00-5:00 - Slide 5: Codex Is The Builder
 
 Say:
 
@@ -39,7 +49,7 @@ smallest working thing, then keep it honest by running it immediately."
 
 Then switch to terminal/editor.
 
-### 4:00-10:00 - Live Demo
+### 5:00-10:30 - Slide 6: Live Demo
 
 Use this prompt in Codex:
 
@@ -72,7 +82,7 @@ Add a README with setup steps.
 Run it and fix any errors.
 ```
 
-### 10:00-12:00 - Slide 4: The API Is Not Just Text
+### 10:30-12:30 - Slide 7: The API Is Not Just Text
 
 Say:
 
@@ -82,7 +92,14 @@ that means one idea can become a product surface fast."
 
 Use one quick example per tile.
 
-### 12:00-14:00 - Teaser Demo
+### 12:30-14:00 - Slide 8: Hackathon Recipe
+
+Use the starter prompt. Say:
+
+"This is the part people should actually steal. It tells Codex the user, the
+stack, the minimum viable version, and the verification loop."
+
+### Optional Teaser Demo
 
 Show:
 

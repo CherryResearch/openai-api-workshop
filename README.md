@@ -5,7 +5,8 @@ API using Codex as the live coding partner.
 
 ## What Is Included
 
-- `slides.html` - polished browser slides with keyboard navigation.
+- `slides.html` - polished browser slides with keyboard navigation, setup
+  steps, copy buttons, and sample run outputs.
 - `speaker-notes.md` - minute-by-minute talk track and demo recovery notes.
 - `attendee-handout.md` - copy/paste setup and prompts for attendees.
 - `demo/` - Python demo package with the main idea-generator CLI and a
@@ -41,6 +42,9 @@ also copy `.env.example` to `.env` as a local fallback.
 poetry run hack-idea "vibe coding for hackathons"
 poetry run hack-idea "vibe coding for hackathons" --format json
 ```
+
+The slides include the setup commands, API key note, starter prompt, and demo
+commands, so the handout is optional during the live workshop.
 
 ## Backup Demo
 

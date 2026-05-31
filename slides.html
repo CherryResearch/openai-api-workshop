@@ -246,6 +246,123 @@
       color: #d7d9db;
     }
 
+    .slide-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: 0;
+      background: #111;
+      color: #fff;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 760;
+      padding: 12px 16px;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #fff;
+      color: #111;
+      border: 1px solid var(--line);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .result-panel {
+      display: none;
+      margin-top: 16px;
+      background: #101214;
+      color: #e7efe7;
+      padding: 20px;
+      font-size: 17px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      min-height: 112px;
+    }
+
+    .result-panel.visible {
+      display: block;
+    }
+
+    .setup-grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .setup-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .setup-item {
+      background: rgba(255,255,255,.76);
+      border-left: 7px solid var(--blue);
+      padding: 18px 20px;
+      font-size: 19px;
+      line-height: 1.3;
+    }
+
+    .setup-item:nth-child(2) { border-left-color: var(--green); }
+    .setup-item:nth-child(3) { border-left-color: var(--coral); }
+
+    .setup-item strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .small-code {
+      font-size: 18px;
+      line-height: 1.42;
+      padding: 22px;
+    }
+
+    .click-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .click-nav button {
+      background: rgba(255,255,255,.92);
+      color: #111;
+      border: 1px solid rgba(0,0,0,.12);
+      padding: 9px 13px;
+      font-size: 13px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 20px;
+      bottom: 18px;
+      background: #111;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .16s ease, transform .16s ease;
+      z-index: 11;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .two-col {
       margin-top: 36px;
       display: grid;
@@ -323,7 +440,10 @@
         height: 56.25vw;
         page-break-after: always;
       }
-      .nav {
+      .nav,
+      .click-nav,
+      .toast,
+      .slide-actions {
         display: none;
       }
     }
@@ -335,7 +455,11 @@
       <div class="kicker"><span class="dot"></span><span>Hackathon Workshop</span></div>
       <h1>Build With The OpenAI API, Codex First</h1>
       <p class="subhead">A 15-minute live build: use Python for the API, Codex for the loop, and your taste for the product.</p>
-      <div class="footer"><span>OpenAI API + Codex</span><span class="page">01 / 07</span></div>
+      <div class="slide-actions">
+        <button data-go="3">Start setup</button>
+        <button class="secondary" data-go="6">Jump to live demo</button>
+      </div>
+      <div class="footer"><span>OpenAI API + Codex</span><span class="page">01 / 09</span></div>
     </section>
 
     <section class="slide">
@@ -350,13 +474,36 @@
         <div class="step"><strong>Improve</strong><span>Shape output for the demo.</span></div>
         <div class="step"><strong>Commit</strong><span>Keep known-good states.</span></div>
       </div>
-      <div class="footer"><span>Prompt -> Patch -> Run -> Verify -> Commit</span><span class="page">02 / 07</span></div>
+      <div class="footer"><span>Prompt -> Patch -> Run -> Verify -> Commit</span><span class="page">02 / 09</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>Setup</span></div>
+      <h2>Run everything from the repo root with Poetry.</h2>
+      <div class="setup-grid">
+        <div>
+          <pre class="small-code"><code>poetry install
+poetry run workshop-pages
+$env:OPENAI_API_KEY="your_api_key_here"</code></pre>
+          <div class="slide-actions">
+            <button data-copy="poetry install">Copy install</button>
+            <button data-copy="poetry run workshop-pages">Copy launch</button>
+            <button class="secondary" data-copy="$env:OPENAI_API_KEY=&quot;your_api_key_here&quot;">Copy API key line</button>
+          </div>
+        </div>
+        <div class="setup-list">
+          <div class="setup-item"><strong>Already exported?</strong> You are good. `.env` is only a local fallback.</div>
+          <div class="setup-item"><strong>Want local fallback?</strong> Copy `.env.example` to `.env` and fill in the key.</div>
+          <div class="setup-item"><strong>Launch pages</strong> `workshop-pages` opens this deck and the notes from a local server.</div>
+        </div>
+      </div>
+      <div class="footer"><span>Handout baked in: install, key, launch</span><span class="page">03 / 09</span></div>
     </section>
 
     <section class="slide">
       <div class="kicker"><span class="dot"></span><span>Smallest Useful Call</span></div>
       <h2>The API starts as one Python call.</h2>
-      <pre><code>from openai import OpenAI
+      <pre class="small-code"><code>from openai import OpenAI
 
 client = OpenAI()
 
@@ -366,7 +513,18 @@ response = client.responses.create(
 )
 
 print(response.output_text)</code></pre>
-      <div class="footer"><span>Source: OpenAI API Quickstart and Text generation docs</span><span class="page">03 / 07</span></div>
+      <div class="slide-actions">
+        <button data-result="api-result">Run snippet</button>
+        <button class="secondary" data-copy="poetry run hack-idea &quot;improving local events&quot;">Copy runnable demo command</button>
+      </div>
+      <div id="api-result" class="result-panel">Sample result:
+
+EventSpark
+
+A tiny app that turns a neighborhood event theme into a poster concept, invite copy, and a three-step launch checklist.
+
+Why this matters: one API call becomes a product behavior you can demo.</div>
+      <div class="footer"><span>Source: OpenAI API Quickstart and Text generation docs</span><span class="page">04 / 09</span></div>
     </section>
 
     <section class="slide">
@@ -376,7 +534,11 @@ print(response.output_text)</code></pre>
         Create a Python CLI called <code>hack_idea.py</code>. It should take a theme argument and call the OpenAI Responses API. Return a project idea, user story, build steps, and demo script.
       </div>
       <div class="side-note">The important move: you steer the product while Codex handles implementation, execution, and repair.</div>
-      <div class="footer"><span>Live demo prompt</span><span class="page">04 / 07</span></div>
+      <div class="slide-actions">
+        <button data-copy="Create a Python CLI called hack_idea.py. It should take a theme argument and call the OpenAI Responses API. Return a project idea, user story, build steps, and demo script. Use argparse. Add a helpful error if OPENAI_API_KEY is missing.">Copy Codex prompt</button>
+        <button class="secondary" data-go="6">Go to demo</button>
+      </div>
+      <div class="footer"><span>Live demo prompt</span><span class="page">05 / 09</span></div>
     </section>
 
     <section class="slide">
@@ -384,13 +546,24 @@ print(response.output_text)</code></pre>
       <h2>Run it, then tighten the output.</h2>
       <div class="terminal">
         <div class="cmd">$ poetry run hack-idea "vibe coding for hackathons"</div>
-        <div class="out">Idea: DemoCopilot for last-minute builders</div>
-        <div class="out">User story: As a hacker, I want a build plan...</div>
+        <div class="out">Click Run demo to show the result.</div>
         <br>
         <div class="cmd">$ poetry run hack-idea "vibe coding for hackathons" --format json</div>
         <div class="out">{ "title": "...", "build_steps": [...] }</div>
       </div>
-      <div class="footer"><span>Show Codex fixing real errors if anything breaks</span><span class="page">05 / 07</span></div>
+      <div class="slide-actions">
+        <button data-result="demo-result">Run demo</button>
+        <button class="secondary" data-copy="poetry run hack-idea &quot;vibe coding for hackathons&quot; --format json">Copy JSON command</button>
+      </div>
+      <div id="demo-result" class="result-panel">DemoCopilot
+
+One-liner: A last-minute build assistant that turns a hackathon theme into a scoped feature, a user story, and a demo script.
+
+Build steps:
+1. Capture the team theme and target user.
+2. Generate structured JSON with title, story, steps, and demo beats.
+3. Render the result into a shareable project brief.</div>
+      <div class="footer"><span>Show Codex fixing real errors if anything breaks</span><span class="page">06 / 09</span></div>
     </section>
 
     <section class="slide">
@@ -404,7 +577,30 @@ print(response.output_text)</code></pre>
         <div class="api-tile"><div class="label">Realtime</div><div class="desc">Low-latency voice agents and live audio/text sessions.</div></div>
         <div class="api-tile"><div class="label">Tools</div><div class="desc">Connect models to APIs, actions, retrieval, and app state.</div></div>
       </div>
-      <div class="footer"><span>Pick the capability that makes the demo feel alive</span><span class="page">06 / 07</span></div>
+      <div class="slide-actions">
+        <button data-result="api-surface-result">Show examples</button>
+        <button class="secondary" data-copy="poetry run transcribe-audio path\\to\\audio.mp3">Copy transcription command</button>
+      </div>
+      <div id="api-surface-result" class="result-panel">Fast demo ideas:
+
+Images -> generate a team poster.
+Speech to text -> transcribe judge feedback.
+Realtime -> make a voice tutor.
+Tools -> let the model create tickets, files, or calendar events.</div>
+      <div class="footer"><span>Pick the capability that makes the demo feel alive</span><span class="page">07 / 09</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>Hackathon Recipe</span></div>
+      <h2>Use this prompt when you start building.</h2>
+      <div class="prompt-card">
+        I am building [thing] for [user]. Use Python and the OpenAI API. Start with the smallest working version. Create files, run them, and fix errors. Explain the next 3 improvements after it works.
+      </div>
+      <div class="slide-actions">
+        <button data-copy="I am building [thing] for [user]. Use Python and the OpenAI API. Start with the smallest working version. Create files, run them, and fix errors. Explain the next 3 improvements after it works.">Copy starter prompt</button>
+        <button class="secondary" data-go="3">Back to setup</button>
+      </div>
+      <div class="footer"><span>Handout prompt, now inside the slides</span><span class="page">08 / 09</span></div>
     </section>
 
     <section class="slide">
@@ -420,10 +616,19 @@ print(response.output_text)</code></pre>
           <p>Text, images, audio, realtime, and tools are product surfaces, not separate talks.</p>
         </div>
       </div>
-      <div class="footer"><span>Docs: developers.openai.com/api/docs/quickstart</span><span class="page">07 / 07</span></div>
+      <div class="slide-actions">
+        <button data-go="1">Restart workshop</button>
+        <button class="secondary" data-copy="https://developers.openai.com/api/docs/quickstart">Copy docs link</button>
+      </div>
+      <div class="footer"><span>Docs: developers.openai.com/api/docs/quickstart</span><span class="page">09 / 09</span></div>
     </section>
   </main>
-  <div class="nav">Use left/right arrows. Print to PDF if needed.</div>
+  <div class="nav">Use buttons or left/right arrows. Print to PDF if needed.</div>
+  <div class="click-nav">
+    <button data-prev>Back</button>
+    <button data-next>Next</button>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite">Copied</div>
   <script>
     const slides = Array.from(document.querySelectorAll(".slide"));
     const requestedSlide = Number(new URLSearchParams(window.location.search).get("slide"));
@@ -432,15 +637,42 @@ print(response.output_text)</code></pre>
       : 0;
     slides.forEach((slide, slideIndex) => {
       slide.classList.toggle("active", slideIndex === index);
+      const page = slide.querySelector(".page");
+      if (page) {
+        page.textContent = `${String(slideIndex + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+      }
     });
 
     function show(next) {
       slides[index].classList.remove("active");
       index = Math.max(0, Math.min(slides.length - 1, next));
       slides[index].classList.add("active");
+      const url = new URL(window.location.href);
+      url.searchParams.set("slide", String(index + 1));
+      history.replaceState(null, "", url);
+    }
+
+    function toast(message) {
+      const toastNode = document.getElementById("toast");
+      toastNode.textContent = message;
+      toastNode.classList.add("visible");
+      window.clearTimeout(window.toastTimer);
+      window.toastTimer = window.setTimeout(() => {
+        toastNode.classList.remove("visible");
+      }, 1500);
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Copied");
+      } catch {
+        toast("Copy failed");
+      }
     }
 
     window.addEventListener("keydown", (event) => {
+      if (event.target && event.target.tagName === "BUTTON") return;
       if (["ArrowRight", "PageDown", " "].includes(event.key)) {
         event.preventDefault();
         show(index + 1);
@@ -451,6 +683,24 @@ print(response.output_text)</code></pre>
       }
       if (event.key === "Home") show(0);
       if (event.key === "End") show(slides.length - 1);
+    });
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+
+      if (button.dataset.next !== undefined) show(index + 1);
+      if (button.dataset.prev !== undefined) show(index - 1);
+      if (button.dataset.go) show(Number(button.dataset.go) - 1);
+      if (button.dataset.copy) copyText(button.dataset.copy);
+      if (button.dataset.result) {
+        const panel = document.getElementById(button.dataset.result);
+        if (panel) {
+          if (!button.dataset.defaultText) button.dataset.defaultText = button.textContent;
+          panel.classList.toggle("visible");
+          button.textContent = panel.classList.contains("visible") ? "Hide result" : button.dataset.defaultText;
+        }
+      }
     });
   </script>
 </body>
