@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build With The OpenAI API, Codex First</title>
+  <style>
+    :root {
+      --ink: #111111;
+      --muted: #5f6368;
+      --paper: #f8f4ec;
+      --panel: #ffffff;
+      --line: #d8d0c3;
+      --green: #08a045;
+      --blue: #2457c5;
+      --coral: #e35d45;
+      --gold: #d99c24;
+      --violet: #6e4fc2;
+      --code: #15171a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #1d1d1f;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+
+    .slide {
+      display: none;
+      position: relative;
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      aspect-ratio: 16 / 9;
+      background:
+        linear-gradient(90deg, rgba(17,17,17,.035) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(0deg, rgba(17,17,17,.035) 1px, transparent 1px) 0 0 / 64px 64px,
+        var(--paper);
+      padding: 54px 68px;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 18px 0 0 var(--blue), 36px 0 0 var(--coral);
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 78px;
+      line-height: 0.95;
+      letter-spacing: 0;
+      max-width: 980px;
+    }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 48px;
+      line-height: 1.03;
+      max-width: 980px;
+    }
+
+    .subhead {
+      margin-top: 24px;
+      color: #2d2d2d;
+      font-size: 24px;
+      line-height: 1.35;
+      max-width: 760px;
+    }
+
+    .footer {
+      position: absolute;
+      left: 68px;
+      right: 68px;
+      bottom: 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #67625a;
+      font-size: 12px;
+    }
+
+    .page {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .loop {
+      position: absolute;
+      left: 68px;
+      right: 68px;
+      bottom: 116px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .step {
+      min-height: 108px;
+      padding: 18px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--line);
+      border-top: 7px solid var(--green);
+    }
+
+    .step:nth-child(2) { border-top-color: var(--blue); }
+    .step:nth-child(3) { border-top-color: var(--coral); }
+    .step:nth-child(4) { border-top-color: var(--gold); }
+    .step:nth-child(5) { border-top-color: var(--violet); }
+    .step:nth-child(6) { border-top-color: var(--ink); }
+
+    .step strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .step span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    pre {
+      margin: 28px 0 0;
+      background: var(--code);
+      color: #f3f3f3;
+      padding: 28px;
+      border-radius: 0;
+      font-size: 21px;
+      line-height: 1.45;
+      overflow: hidden;
+      box-shadow: 0 18px 48px rgba(0,0,0,.18);
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    .prompt-card {
+      margin-top: 36px;
+      background: #111;
+      color: #fff;
+      padding: 32px;
+      width: 760px;
+      font-size: 24px;
+      line-height: 1.32;
+      box-shadow: 22px 22px 0 rgba(36,87,197,.18);
+    }
+
+    .side-note {
+      position: absolute;
+      right: 68px;
+      top: 176px;
+      width: 330px;
+      padding-left: 24px;
+      border-left: 4px solid var(--coral);
+      color: #383838;
+      font-size: 22px;
+      line-height: 1.35;
+    }
+
+    .api-grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .api-tile {
+      min-height: 132px;
+      background: rgba(255,255,255,.74);
+      border: 1px solid var(--line);
+      padding: 20px;
+    }
+
+    .api-tile .label {
+      font-size: 22px;
+      font-weight: 780;
+      margin-bottom: 10px;
+    }
+
+    .api-tile .desc {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .api-tile:nth-child(1) { border-top: 7px solid var(--blue); }
+    .api-tile:nth-child(2) { border-top: 7px solid var(--coral); }
+    .api-tile:nth-child(3) { border-top: 7px solid var(--gold); }
+    .api-tile:nth-child(4) { border-top: 7px solid var(--green); }
+    .api-tile:nth-child(5) { border-top: 7px solid var(--violet); }
+    .api-tile:nth-child(6) { border-top: 7px solid var(--ink); }
+
+    .terminal {
+      margin-top: 34px;
+      background: #101214;
+      color: #e7efe7;
+      padding: 28px;
+      font-size: 22px;
+      line-height: 1.55;
+      min-height: 300px;
+      box-shadow: 0 18px 48px rgba(0,0,0,.18);
+    }
+
+    .terminal .cmd {
+      color: #87d787;
+    }
+
+    .terminal .out {
+      color: #d7d9db;
+    }
+
+    .two-col {
+      margin-top: 36px;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 38px;
+      align-items: start;
+    }
+
+    .big-list {
+      display: grid;
+      gap: 18px;
+      font-size: 25px;
+      line-height: 1.25;
+    }
+
+    .big-list div {
+      padding-left: 20px;
+      border-left: 6px solid var(--green);
+    }
+
+    .big-list div:nth-child(2) { border-left-color: var(--blue); }
+    .big-list div:nth-child(3) { border-left-color: var(--coral); }
+    .big-list div:nth-child(4) { border-left-color: var(--gold); }
+
+    .closing {
+      position: absolute;
+      left: 68px;
+      right: 68px;
+      bottom: 112px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .closing-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 28px;
+      min-height: 180px;
+    }
+
+    .closing-card strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .closing-card p {
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    .nav {
+      position: fixed;
+      right: 20px;
+      bottom: 18px;
+      color: rgba(255,255,255,.72);
+      font-size: 12px;
+      z-index: 10;
+    }
+
+    @media print {
+      body {
+        background: white;
+        overflow: visible;
+      }
+      .deck {
+        display: block;
+        height: auto;
+      }
+      .slide {
+        display: block;
+        width: 100vw;
+        height: 56.25vw;
+        page-break-after: always;
+      }
+      .nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="slide active">
+      <div class="kicker"><span class="dot"></span><span>Hackathon Workshop</span></div>
+      <h1>Build With The OpenAI API, Codex First</h1>
+      <p class="subhead">A 15-minute live build: use Python for the API, Codex for the loop, and your taste for the product.</p>
+      <div class="footer"><span>OpenAI API + Codex</span><span class="page">01 / 07</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>The Builder Loop</span></div>
+      <h2>Hackathon speed comes from a tight feedback loop.</h2>
+      <p class="subhead">Do not disappear into boilerplate. Keep the app moving from idea to running code.</p>
+      <div class="loop">
+        <div class="step"><strong>Idea</strong><span>Pick one user and one moment.</span></div>
+        <div class="step"><strong>Codex</strong><span>Ask for the smallest working version.</span></div>
+        <div class="step"><strong>Python</strong><span>Wrap one API capability.</span></div>
+        <div class="step"><strong>Run</strong><span>Use the real error text.</span></div>
+        <div class="step"><strong>Improve</strong><span>Shape output for the demo.</span></div>
+        <div class="step"><strong>Commit</strong><span>Keep known-good states.</span></div>
+      </div>
+      <div class="footer"><span>Prompt -> Patch -> Run -> Verify -> Commit</span><span class="page">02 / 07</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>Smallest Useful Call</span></div>
+      <h2>The API starts as one Python call.</h2>
+      <pre><code>from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.5",
+    input="Give me one hackathon app idea for improving local events."
+)
+
+print(response.output_text)</code></pre>
+      <div class="footer"><span>Source: OpenAI API Quickstart and Text generation docs</span><span class="page">03 / 07</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>Codex Prompt</span></div>
+      <h2>Ask for behavior. Let Codex assemble the files.</h2>
+      <div class="prompt-card">
+        Create a Python CLI called <code>hack_idea.py</code>. It should take a theme argument and call the OpenAI Responses API. Return a project idea, user story, build steps, and demo script.
+      </div>
+      <div class="side-note">The important move: you steer the product while Codex handles implementation, execution, and repair.</div>
+      <div class="footer"><span>Live demo prompt</span><span class="page">04 / 07</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>Live Demo</span></div>
+      <h2>Run it, then tighten the output.</h2>
+      <div class="terminal">
+        <div class="cmd">$ hack-idea "vibe coding for hackathons"</div>
+        <div class="out">Idea: DemoCopilot for last-minute builders</div>
+        <div class="out">User story: As a hacker, I want a build plan...</div>
+        <br>
+        <div class="cmd">$ hack-idea "vibe coding for hackathons" --format json</div>
+        <div class="out">{ "title": "...", "build_steps": [...] }</div>
+      </div>
+      <div class="footer"><span>Show Codex fixing real errors if anything breaks</span><span class="page">05 / 07</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>Beyond Text</span></div>
+      <h2>The API is a stack of product capabilities.</h2>
+      <div class="api-grid">
+        <div class="api-tile"><div class="label">Text</div><div class="desc">Summaries, plans, classification, structured JSON, app logic.</div></div>
+        <div class="api-tile"><div class="label">Images</div><div class="desc">Generate posters, avatars, storyboards, and product visuals.</div></div>
+        <div class="api-tile"><div class="label">Speech to text</div><div class="desc">Transcripts, captions, meeting notes, searchable audio.</div></div>
+        <div class="api-tile"><div class="label">Text to speech</div><div class="desc">Narration, accessibility, generated voice responses.</div></div>
+        <div class="api-tile"><div class="label">Realtime</div><div class="desc">Low-latency voice agents and live audio/text sessions.</div></div>
+        <div class="api-tile"><div class="label">Tools</div><div class="desc">Connect models to APIs, actions, retrieval, and app state.</div></div>
+      </div>
+      <div class="footer"><span>Pick the capability that makes the demo feel alive</span><span class="page">06 / 07</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker"><span class="dot"></span><span>Takeaway</span></div>
+      <h2>Your job is taste and direction. Codex turns that into running code.</h2>
+      <div class="closing">
+        <div class="closing-card">
+          <strong>Prompt for momentum</strong>
+          <p>Start with the smallest working version. Run immediately. Improve only after it works.</p>
+        </div>
+        <div class="closing-card">
+          <strong>Use the API as the engine</strong>
+          <p>Text, images, audio, realtime, and tools are product surfaces, not separate talks.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Docs: developers.openai.com/api/docs/quickstart</span><span class="page">07 / 07</span></div>
+    </section>
+  </main>
+  <div class="nav">Use left/right arrows. Print to PDF if needed.</div>
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const requestedSlide = Number(new URLSearchParams(window.location.search).get("slide"));
+    let index = Number.isInteger(requestedSlide) && requestedSlide > 0
+      ? Math.min(requestedSlide - 1, slides.length - 1)
+      : 0;
+    slides.forEach((slide, slideIndex) => {
+      slide.classList.toggle("active", slideIndex === index);
+    });
+
+    function show(next) {
+      slides[index].classList.remove("active");
+      index = Math.max(0, Math.min(slides.length - 1, next));
+      slides[index].classList.add("active");
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+        event.preventDefault();
+        show(index + 1);
+      }
+      if (["ArrowLeft", "PageUp", "Backspace"].includes(event.key)) {
+        event.preventDefault();
+        show(index - 1);
+      }
+      if (event.key === "Home") show(0);
+      if (event.key === "End") show(slides.length - 1);
+    });
+  </script>
+</body>
+</html>

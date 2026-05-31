@@ -1,0 +1,17 @@
+[project]
+name = "codex-api-workshop-demo"
+version = "0.1.0"
+description = "Python demos for a Codex-first OpenAI API hackathon workshop"
+requires-python = ">=3.10"
+dependencies = [
+  "openai>=2.0.0",
+]
+
+[project.scripts]
+hack-idea = "workshop_demo.hack_idea:main"
+transcribe-audio = "workshop_demo.transcribe:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
