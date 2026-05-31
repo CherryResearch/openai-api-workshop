@@ -9,17 +9,21 @@ assembly and you steering the product.
 
 ```powershell
 cd demo
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .
+poetry install
 $env:OPENAI_API_KEY="your_api_key_here"
+```
+
+## Open The Workshop Pages
+
+```powershell
+poetry run workshop-pages
 ```
 
 ## Run
 
 ```powershell
-hack-idea "AI tools for student builders"
-hack-idea "AI tools for student builders" --format json
+poetry run hack-idea "AI tools for student builders"
+poetry run hack-idea "AI tools for student builders" --format json
 ```
 
 ## Prompt Codex Like This
@@ -50,4 +54,3 @@ Explain the next 3 improvements after it works.
 - Audio: https://developers.openai.com/api/docs/guides/audio
 - Realtime: https://developers.openai.com/api/docs/guides/realtime
 - Codex: https://developers.openai.com/codex/quickstart
-

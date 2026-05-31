@@ -6,9 +6,11 @@ import os
 import sys
 from typing import Any
 
+from dotenv import load_dotenv
 from openai import OpenAI
 
 
+load_dotenv()
 DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.5")
 
 
@@ -143,4 +145,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

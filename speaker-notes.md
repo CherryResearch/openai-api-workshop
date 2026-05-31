@@ -53,7 +53,7 @@ Use argparse. Add a helpful error if OPENAI_API_KEY is missing.
 If using the included package instead of building from scratch:
 
 ```powershell
-hack-idea "vibe coding for hackathons"
+poetry run hack-idea "vibe coding for hackathons"
 ```
 
 Narration beats:
@@ -87,7 +87,7 @@ Use one quick example per tile.
 Show:
 
 ```powershell
-transcribe-audio path\to\audio.mp3
+poetry run transcribe-audio path\to\audio.mp3
 ```
 
 Do not run unless you have an audio file and time. Say:
@@ -120,4 +120,3 @@ If the API call is slow:
 
 - Ask: "What should we add next?"
 - Use the wait time to explain JSON output and demo reliability.
-

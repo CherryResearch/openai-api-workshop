@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex-First OpenAI API Workshop</title>
+  <style>
+    :root {
+      --ink: #121212;
+      --paper: #f8f4ec;
+      --muted: #625f58;
+      --line: #d8d0c3;
+      --green: #08a045;
+      --blue: #2457c5;
+      --coral: #e35d45;
+      --gold: #d99c24;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, rgba(17,17,17,.035) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(0deg, rgba(17,17,17,.035) 1px, transparent 1px) 0 0 / 64px 64px,
+        var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(1120px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 64px 0;
+    }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 18px 0 0 var(--blue), 36px 0 0 var(--coral);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 960px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(48px, 8vw, 92px);
+      line-height: .94;
+      letter-spacing: 0;
+    }
+
+    .subhead {
+      max-width: 760px;
+      margin: 26px 0 0;
+      color: #2f2d2a;
+      font-size: 23px;
+      line-height: 1.35;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    a.card {
+      display: block;
+      min-height: 188px;
+      padding: 22px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--line);
+      color: inherit;
+      text-decoration: none;
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    a.card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px rgba(0,0,0,.12);
+    }
+
+    .card:nth-child(1) { border-top: 7px solid var(--blue); }
+    .card:nth-child(2) { border-top: 7px solid var(--green); }
+    .card:nth-child(3) { border-top: 7px solid var(--coral); }
+    .card:nth-child(4) { border-top: 7px solid var(--gold); }
+
+    .card strong {
+      display: block;
+      font-size: 25px;
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+
+    .card span {
+      display: block;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .commands {
+      margin-top: 44px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    pre {
+      margin: 0;
+      background: #111316;
+      color: #f2f2f2;
+      padding: 24px;
+      overflow: auto;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    footer {
+      margin-top: 44px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 860px) {
+      .grid,
+      .commands {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="kicker"><span class="dot"></span><span>Workshop Launcher</span></div>
+    <h1>Codex-First OpenAI API Workshop</h1>
+    <p class="subhead">Slides, notes, handout, and Python demo scripts for a fast hackathon session.</p>
+
+    <section class="grid" aria-label="Workshop pages">
+      <a class="card" href="slides.html">
+        <strong>Slides</strong>
+        <span>Seven-slide browser deck with keyboard navigation.</span>
+      </a>
+      <a class="card" href="speaker-notes.md">
+        <strong>Speaker Notes</strong>
+        <span>Minute-by-minute talk track and demo recovery plan.</span>
+      </a>
+      <a class="card" href="attendee-handout.md">
+        <strong>Handout</strong>
+        <span>Setup commands, reusable Codex prompt, and API directions.</span>
+      </a>
+      <a class="card" href="demo/README.md">
+        <strong>Demo README</strong>
+        <span>Poetry setup plus the idea and transcription commands.</span>
+      </a>
+    </section>
+
+    <section class="commands" aria-label="Demo commands">
+      <pre><code>cd demo
+poetry install
+poetry run workshop-pages</code></pre>
+      <pre><code>$env:OPENAI_API_KEY="your_api_key_here"
+poetry run hack-idea "vibe coding"</code></pre>
+    </section>
+
+    <footer>
+      Local pages are served from this repo only. Press Ctrl+C in the terminal to stop the server.
+    </footer>
+  </main>
+</body>
+</html>
+

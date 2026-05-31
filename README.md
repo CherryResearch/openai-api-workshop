@@ -13,18 +13,21 @@ API using Codex as the live coding partner.
 
 ## Fastest Way To Present
 
-1. Open `slides.html` in a browser.
-2. Open a terminal in `demo/`.
-3. Run:
+1. Open a terminal in `demo/`.
+2. Run:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .
+poetry install
 copy .env.example .env
 ```
 
-4. Put your API key in the terminal:
+3. Launch the workshop pages:
+
+```powershell
+poetry run workshop-pages
+```
+
+4. Put your API key in the terminal when you are ready for the API demo:
 
 ```powershell
 $env:OPENAI_API_KEY="your_api_key_here"
@@ -33,8 +36,8 @@ $env:OPENAI_API_KEY="your_api_key_here"
 5. Demo:
 
 ```powershell
-hack-idea "vibe coding for hackathons"
-hack-idea "vibe coding for hackathons" --format json
+poetry run hack-idea "vibe coding for hackathons"
+poetry run hack-idea "vibe coding for hackathons" --format json
 ```
 
 ## Backup Demo
@@ -55,4 +58,3 @@ Prompt -> Patch -> Run -> Verify -> Commit
 - Audio and speech: https://developers.openai.com/api/docs/guides/audio
 - Realtime: https://developers.openai.com/api/docs/guides/realtime
 - Codex Quickstart: https://developers.openai.com/codex/quickstart
-

@@ -5,7 +5,11 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
 from openai import OpenAI
+
+
+load_dotenv()
 
 
 def require_api_key() -> None:
@@ -56,4 +60,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
