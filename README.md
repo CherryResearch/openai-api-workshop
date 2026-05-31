@@ -27,6 +27,9 @@ poetry install
 poetry run workshop-pages
 ```
 
+If a browser does not open, use the printed local URL, usually
+`http://127.0.0.1:8765/index.html`.
+
 4. Make sure your API key is exported when you are ready for the API demo:
 
 ```powershell

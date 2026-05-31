@@ -20,6 +20,7 @@ poetry run workshop-pages
 
 This starts a local server from the repository root and opens the workshop
 landing page. Press `Ctrl+C` when you are done.
+If a browser does not open, use the printed local URL.
 
 Optionally set a model:
 

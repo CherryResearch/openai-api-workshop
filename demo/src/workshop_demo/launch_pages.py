@@ -5,7 +5,9 @@ import base64
 import http.server
 import json
 import os
+import platform
 import socket
+import subprocess
 import sys
 import webbrowser
 from pathlib import Path
@@ -149,6 +151,26 @@ def make_handler(root: Path) -> type[http.server.SimpleHTTPRequestHandler]:
     return WorkshopHandler
 
 
+def open_browser(url: str) -> bool:
+    if platform.system() == "Windows":
+        try:
+            os.startfile(url)  # type: ignore[attr-defined]
+            return True
+        except OSError:
+            pass
+        try:
+            subprocess.Popen(
+                ["cmd", "/c", "start", "", url],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                shell=False,
+            )
+            return True
+        except OSError:
+            pass
+    return webbrowser.open(url)
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Serve and open the Codex-first API workshop pages."
@@ -181,12 +203,13 @@ def main(argv: list[str] | None = None) -> int:
     server = http.server.ThreadingHTTPServer((args.host, port), handler)
     url = f"http://{args.host}:{port}/{args.page}"
 
-    print(f"Serving workshop pages from {root}")
-    print(f"Open {url}")
-    print("Press Ctrl+C to stop.")
+    print(f"Serving workshop pages from {root}", flush=True)
+    print(f"Open {url}", flush=True)
+    print("Press Ctrl+C to stop.", flush=True)
 
     if not args.no_browser:
-        webbrowser.open(url)
+        if not open_browser(url):
+            print(f"Could not open a browser automatically. Open {url}", flush=True)
 
     try:
         server.serve_forever()
