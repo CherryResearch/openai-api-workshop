@@ -13,12 +13,11 @@ API using Codex as the live coding partner.
 
 ## Fastest Way To Present
 
-1. Open a terminal in `demo/`.
+1. Open a terminal at the repo root.
 2. Run:
 
 ```powershell
 poetry install
-copy .env.example .env
 ```
 
 3. Launch the workshop pages:
@@ -27,11 +26,14 @@ copy .env.example .env
 poetry run workshop-pages
 ```
 
-4. Put your API key in the terminal when you are ready for the API demo:
+4. Make sure your API key is exported when you are ready for the API demo:
 
 ```powershell
 $env:OPENAI_API_KEY="your_api_key_here"
 ```
+
+If `OPENAI_API_KEY` is already exported in your shell, you are good. You can
+also copy `.env.example` to `.env` as a local fallback.
 
 5. Demo:
 

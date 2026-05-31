@@ -5,9 +5,12 @@ Python demo scripts for the 15-minute Codex-first OpenAI API workshop.
 ## Install
 
 ```powershell
+cd ..
 poetry install
 $env:OPENAI_API_KEY="your_api_key_here"
 ```
+
+If `OPENAI_API_KEY` is already exported, skip the API key line.
 
 ## Launch Workshop Pages
 

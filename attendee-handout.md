@@ -8,10 +8,11 @@ assembly and you steering the product.
 ## Setup
 
 ```powershell
-cd demo
 poetry install
 $env:OPENAI_API_KEY="your_api_key_here"
 ```
+
+If `OPENAI_API_KEY` is already exported, skip the second line.
 
 ## Open The Workshop Pages
 

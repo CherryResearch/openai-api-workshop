@@ -16,7 +16,7 @@ transcribe-audio = "workshop_demo.transcribe:main"
 workshop-pages = "workshop_demo.launch_pages:main"
 
 [tool.poetry]
-packages = [{ include = "workshop_demo", from = "src" }]
+packages = [{ include = "workshop_demo", from = "demo/src" }]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
