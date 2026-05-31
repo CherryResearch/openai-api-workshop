@@ -86,11 +86,13 @@ Run it and fix any errors.
 
 Say:
 
-"Text is the gateway drug, respectfully. But the API also gives you images,
-audio, realtime interactions, transcription, and tool calling. For a hackathon,
-that means one idea can become a product surface fast."
+"Text is the gateway drug, respectfully. But one idea can become a product
+surface fast: welcome copy, poster art, and a spoken opener."
 
-Use one quick example per tile.
+Click the three buttons in order: `Run text`, `Run image`, `Run voice`. These
+call local endpoints from `poetry run workshop-pages` when an API key is
+available. If an endpoint fails, the slide falls back to an in-browser demo so
+the talk does not stall.
 
 ### 12:30-14:00 - Slide 8: Hackathon Recipe
 

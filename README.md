@@ -43,8 +43,9 @@ poetry run hack-idea "vibe coding for hackathons"
 poetry run hack-idea "vibe coding for hackathons" --format json
 ```
 
-The slides include the setup commands, API key note, starter prompt, and demo
-commands, so the handout is optional during the live workshop.
+The slides include the setup commands, API key note, starter prompt, demo
+commands, and a local button-driven API chain for text -> image -> voice, so
+the handout is optional during the live workshop.
 
 ## Backup Demo
 

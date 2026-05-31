@@ -369,6 +369,44 @@
       text-decoration: none;
     }
 
+    .tile-controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tile-controls button {
+      width: 100%;
+    }
+
+    .tile-output {
+      min-height: 46px;
+      color: #343434;
+      font-size: 14px;
+      line-height: 1.32;
+      border-left: 4px solid var(--line);
+      padding-left: 12px;
+    }
+
+    .poster-preview {
+      min-height: 46px;
+      color: #111;
+      font-size: 14px;
+      line-height: 1.28;
+      padding: 10px;
+      background:
+        linear-gradient(135deg, rgba(36,87,197,.18), rgba(227,93,69,.18)),
+        #fff;
+      border: 1px solid rgba(0,0,0,.12);
+    }
+
+    .poster-preview img {
+      display: block;
+      width: 100%;
+      max-height: 92px;
+      object-fit: cover;
+      margin-bottom: 8px;
+    }
+
     .small-code {
       font-size: 18px;
       line-height: 1.42;
@@ -617,31 +655,39 @@ Steps: capture theme -> generate structured JSON -> render a shareable project b
             <strong>Welcome Message</strong>
             <p>Generate a warm hackathon opening message for builders, mentors, and judges.</p>
           </div>
-          <a href="https://developers.openai.com/api/docs/guides/text" target="_blank" rel="noreferrer">Text generation docs</a>
+          <div class="tile-controls">
+            <button data-chain="text">Run text</button>
+            <div id="welcome-output" class="tile-output">Output appears here.</div>
+            <a href="https://developers.openai.com/api/docs/guides/text" target="_blank" rel="noreferrer">Text generation docs</a>
+          </div>
         </div>
         <div class="action-tile">
           <div>
             <strong>Event Poster</strong>
             <p>Create a visual poster concept for the hackathon theme and opening slide.</p>
           </div>
-          <a href="https://developers.openai.com/api/docs/guides/image-generation" target="_blank" rel="noreferrer">Image generation docs</a>
+          <div class="tile-controls">
+            <button data-chain="image">Run image</button>
+            <div id="poster-output" class="poster-preview">Uses the welcome message.</div>
+            <a href="https://developers.openai.com/api/docs/guides/image-generation" target="_blank" rel="noreferrer">Image generation docs</a>
+          </div>
         </div>
         <div class="action-tile">
           <div>
             <strong>Spoken Welcome</strong>
             <p>Turn the generated welcome message into a short voiceover.</p>
           </div>
-          <a href="https://developers.openai.com/api/docs/guides/audio" target="_blank" rel="noreferrer">Text to speech docs</a>
+          <div class="tile-controls">
+            <button data-chain="voice">Run voice</button>
+            <div id="voice-output" class="tile-output">Uses the same welcome message.</div>
+            <a href="https://developers.openai.com/api/docs/guides/audio" target="_blank" rel="noreferrer">Text to speech docs</a>
+          </div>
         </div>
       </div>
       <div class="slide-actions">
-        <button data-result="api-surface-result">Show mini workflow</button>
+        <button data-chain="reset">Reset mini demo</button>
         <button class="secondary" data-copy="Welcome text -> poster prompt -> text-to-speech voiceover">Copy workflow</button>
       </div>
-      <div id="api-surface-result" class="result-panel">Mini workflow:
-1. Text: "Write a 45-second welcome for a vibe coding hackathon."
-2. Images: "Create a bright poster for that welcome message."
-3. Audio: "Read the welcome message as an upbeat opening voiceover."</div>
       <div class="footer"><span>Pick the capability that makes the demo feel alive</span><span class="page">07 / 09</span></div>
     </section>
 
@@ -726,6 +772,104 @@ Steps: capture theme -> generate structured JSON -> render a shareable project b
       }
     }
 
+    const chainState = {
+      welcome: "",
+      poster: "",
+    };
+
+    function ensureWelcome() {
+      if (!chainState.welcome) {
+        chainState.welcome = "Welcome to the vibe coding hackathon. Tonight is about turning taste, curiosity, and fast iteration into working demos. Pick a real user, ship the smallest useful thing, and let the room see it come alive.";
+        document.getElementById("welcome-output").textContent = chainState.welcome;
+      }
+      return chainState.welcome;
+    }
+
+    async function postJson(url, payload) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        throw new Error(data.error || `Request failed: ${response.status}`);
+      }
+      return data;
+    }
+
+    async function runChain(kind) {
+      const welcomeNode = document.getElementById("welcome-output");
+      const posterNode = document.getElementById("poster-output");
+      const voiceNode = document.getElementById("voice-output");
+
+      if (kind === "reset") {
+        chainState.welcome = "";
+        chainState.poster = "";
+        welcomeNode.textContent = "Output appears here.";
+        posterNode.textContent = "Uses the welcome message.";
+        voiceNode.textContent = "Uses the same welcome message.";
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        toast("Reset");
+        return;
+      }
+
+      if (kind === "text") {
+        welcomeNode.textContent = "Running text API...";
+        try {
+          const data = await (await fetch("/api/welcome")).json();
+          if (data.error) throw new Error(data.error);
+          chainState.welcome = data.message;
+          welcomeNode.textContent = chainState.welcome;
+          toast("Text API complete");
+        } catch (error) {
+          ensureWelcome();
+          toast(`Text fallback: ${error.message}`);
+        }
+        return;
+      }
+
+      if (kind === "image") {
+        const welcome = ensureWelcome();
+        posterNode.textContent = "Running image API from welcome text...";
+        try {
+          const data = await postJson("/api/poster", { message: welcome });
+          chainState.poster = data.prompt;
+          posterNode.innerHTML = `<img src="${data.image}" alt="Generated hackathon poster"><span>Poster generated from the welcome message.</span>`;
+          toast("Image API complete");
+        } catch (error) {
+          chainState.poster = `Poster prompt: bright hackathon opening scene, builders gathered around laptops, bold title "Vibe Coding Night", warm stage lighting. Inspired by: "${welcome.slice(0, 84)}..."`;
+          posterNode.textContent = chainState.poster;
+          toast(`Image fallback: ${error.message}`);
+        }
+        return;
+      }
+
+      if (kind === "voice") {
+        const welcome = ensureWelcome();
+        voiceNode.textContent = "Running text-to-speech from welcome text...";
+        try {
+          const data = await postJson("/api/voice", { message: welcome });
+          const audio = new Audio(data.audio);
+          await audio.play();
+          voiceNode.textContent = `Playing generated voiceover from: "${welcome.slice(0, 110)}..."`;
+          toast("Text-to-speech API complete");
+        } catch (error) {
+          voiceNode.textContent = `Voiceover source: "${welcome.slice(0, 124)}..."`;
+          if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(welcome);
+            utterance.rate = 1.02;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+            toast(`Browser speech fallback: ${error.message}`);
+          } else {
+            toast(`Voice fallback failed: ${error.message}`);
+          }
+        }
+      }
+    }
+
     window.addEventListener("keydown", (event) => {
       if (event.target && event.target.tagName === "BUTTON") return;
       if (["ArrowRight", "PageDown", " "].includes(event.key)) {
@@ -748,6 +892,7 @@ Steps: capture theme -> generate structured JSON -> render a shareable project b
       if (button.dataset.prev !== undefined) show(index - 1);
       if (button.dataset.go) show(Number(button.dataset.go) - 1);
       if (button.dataset.copy) copyText(button.dataset.copy);
+      if (button.dataset.chain) runChain(button.dataset.chain);
       if (button.dataset.result) {
         const panel = document.getElementById(button.dataset.result);
         if (panel) {
