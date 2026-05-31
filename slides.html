@@ -276,14 +276,21 @@
 
     .result-panel {
       display: none;
-      margin-top: 16px;
+      position: absolute;
+      left: 68px;
+      right: 68px;
+      bottom: 76px;
+      margin-top: 0;
       background: #101214;
       color: #e7efe7;
-      padding: 20px;
-      font-size: 17px;
-      line-height: 1.45;
+      padding: 18px 20px;
+      font-size: 15px;
+      line-height: 1.32;
       white-space: pre-wrap;
-      min-height: 112px;
+      max-height: 178px;
+      overflow: hidden;
+      box-shadow: 0 18px 48px rgba(0,0,0,.18);
+      z-index: 4;
     }
 
     .result-panel.visible {
@@ -318,6 +325,48 @@
       display: block;
       font-size: 22px;
       margin-bottom: 4px;
+    }
+
+    .action-grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .action-tile {
+      min-height: 248px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--line);
+      border-top: 8px solid var(--blue);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .action-tile:nth-child(2) { border-top-color: var(--coral); }
+    .action-tile:nth-child(3) { border-top-color: var(--green); }
+
+    .action-tile strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .action-tile p {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.35;
+      margin-bottom: 18px;
+    }
+
+    .action-tile a {
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 760;
+      text-decoration: none;
     }
 
     .small-code {
@@ -518,12 +567,9 @@ print(response.output_text)</code></pre>
         <button class="secondary" data-copy="poetry run hack-idea &quot;improving local events&quot;">Copy runnable demo command</button>
       </div>
       <div id="api-result" class="result-panel">Sample result:
+EventSpark turns a neighborhood event theme into invite copy, a poster idea, and a 3-step launch checklist.
 
-EventSpark
-
-A tiny app that turns a neighborhood event theme into a poster concept, invite copy, and a three-step launch checklist.
-
-Why this matters: one API call becomes a product behavior you can demo.</div>
+Why it matters: one API call becomes a product behavior you can demo.</div>
       <div class="footer"><span>Source: OpenAI API Quickstart and Text generation docs</span><span class="page">04 / 09</span></div>
     </section>
 
@@ -555,38 +601,47 @@ Why this matters: one API call becomes a product behavior you can demo.</div>
         <button data-result="demo-result">Run demo</button>
         <button class="secondary" data-copy="poetry run hack-idea &quot;vibe coding for hackathons&quot; --format json">Copy JSON command</button>
       </div>
-      <div id="demo-result" class="result-panel">DemoCopilot
+      <div id="demo-result" class="result-panel">DemoCopilot:
+A last-minute build assistant that turns a hackathon theme into a scoped feature, user story, and demo script.
 
-One-liner: A last-minute build assistant that turns a hackathon theme into a scoped feature, a user story, and a demo script.
-
-Build steps:
-1. Capture the team theme and target user.
-2. Generate structured JSON with title, story, steps, and demo beats.
-3. Render the result into a shareable project brief.</div>
+Steps: capture theme -> generate structured JSON -> render a shareable project brief.</div>
       <div class="footer"><span>Show Codex fixing real errors if anything breaks</span><span class="page">06 / 09</span></div>
     </section>
 
     <section class="slide">
       <div class="kicker"><span class="dot"></span><span>Beyond Text</span></div>
-      <h2>The API is a stack of product capabilities.</h2>
-      <div class="api-grid">
-        <div class="api-tile"><div class="label">Text</div><div class="desc">Summaries, plans, classification, structured JSON, app logic.</div></div>
-        <div class="api-tile"><div class="label">Images</div><div class="desc">Generate posters, avatars, storyboards, and product visuals.</div></div>
-        <div class="api-tile"><div class="label">Speech to text</div><div class="desc">Transcripts, captions, meeting notes, searchable audio.</div></div>
-        <div class="api-tile"><div class="label">Text to speech</div><div class="desc">Narration, accessibility, generated voice responses.</div></div>
-        <div class="api-tile"><div class="label">Realtime</div><div class="desc">Low-latency voice agents and live audio/text sessions.</div></div>
-        <div class="api-tile"><div class="label">Tools</div><div class="desc">Connect models to APIs, actions, retrieval, and app state.</div></div>
+      <h2>Make the opening feel alive with three API calls.</h2>
+      <div class="action-grid">
+        <div class="action-tile">
+          <div>
+            <strong>Welcome Message</strong>
+            <p>Generate a warm hackathon opening message for builders, mentors, and judges.</p>
+          </div>
+          <a href="https://developers.openai.com/api/docs/guides/text" target="_blank" rel="noreferrer">Text generation docs</a>
+        </div>
+        <div class="action-tile">
+          <div>
+            <strong>Event Poster</strong>
+            <p>Create a visual poster concept for the hackathon theme and opening slide.</p>
+          </div>
+          <a href="https://developers.openai.com/api/docs/guides/image-generation" target="_blank" rel="noreferrer">Image generation docs</a>
+        </div>
+        <div class="action-tile">
+          <div>
+            <strong>Spoken Welcome</strong>
+            <p>Turn the generated welcome message into a short voiceover.</p>
+          </div>
+          <a href="https://developers.openai.com/api/docs/guides/audio" target="_blank" rel="noreferrer">Text to speech docs</a>
+        </div>
       </div>
       <div class="slide-actions">
-        <button data-result="api-surface-result">Show examples</button>
-        <button class="secondary" data-copy="poetry run transcribe-audio path\\to\\audio.mp3">Copy transcription command</button>
+        <button data-result="api-surface-result">Show mini workflow</button>
+        <button class="secondary" data-copy="Welcome text -> poster prompt -> text-to-speech voiceover">Copy workflow</button>
       </div>
-      <div id="api-surface-result" class="result-panel">Fast demo ideas:
-
-Images -> generate a team poster.
-Speech to text -> transcribe judge feedback.
-Realtime -> make a voice tutor.
-Tools -> let the model create tickets, files, or calendar events.</div>
+      <div id="api-surface-result" class="result-panel">Mini workflow:
+1. Text: "Write a 45-second welcome for a vibe coding hackathon."
+2. Images: "Create a bright poster for that welcome message."
+3. Audio: "Read the welcome message as an upbeat opening voiceover."</div>
       <div class="footer"><span>Pick the capability that makes the demo feel alive</span><span class="page">07 / 09</span></div>
     </section>
 
